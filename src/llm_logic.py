@@ -87,8 +87,6 @@ def call_local_llm(prompt: str, system_prompt: str) -> str:
 def enrich_user_input(user_input: str) -> str:
     """
     Étape 1 : Le LLM interprète et enrichit le texte brut de l'utilisateur.
-    - Si l'input est court/vague → infère des éléments plausibles
-    - Si l'input est riche → reformule de façon professionnelle
     Retourne un texte enrichi (pas encore du JSON).
     """
     system_prompt = (
@@ -124,7 +122,7 @@ def enrich_user_input(user_input: str) -> str:
 # PIPELINE GÉNÉRATION CV — ÉTAPE 2 : STRUCTURATION JSON
 # ---------------------------------------------------------------------------
 
-# Exemple few-shot injecté dans le prompt pour guider le LLM 3B
+# Exemple injecté dans le prompt pour guider le LLM 3B
 FEW_SHOT_EXAMPLE = """
 {
   "identity": {

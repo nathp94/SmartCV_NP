@@ -1,10 +1,14 @@
+# ---------------------------------------------------------------------------
+# TRANSFORMATION DU JSON EN MARKDOWN
+# ---------------------------------------------------------------------------
+
 def cv_data_to_markdown(data: dict) -> str:
     if not data or "error" in data:
         return f"⚠️ Erreur : {data.get('error', 'Données invalides')}"
 
     lines = []
 
-    # IDENTITÉ
+
     identity = data.get("identity", {})
     name = f"{identity.get('first_name', '')} {identity.get('last_name', '')}".strip()
     if name:
@@ -18,13 +22,13 @@ def cv_data_to_markdown(data: dict) -> str:
         lines.append("  |  ".join(contact_parts))
     lines.append("")
 
-    # RÉSUMÉ
+
     if data.get("summary"):
         lines.append("---")
         lines.append(f"*{data['summary']}*")
         lines.append("")
 
-    # EXPÉRIENCES
+
     experiences = data.get("experience", [])
     if experiences:
         lines.append("## 💼 Expériences professionnelles")
@@ -42,7 +46,7 @@ def cv_data_to_markdown(data: dict) -> str:
                 lines.append(f"- {bullet}")
             lines.append("")
 
-    # PROJETS
+
     projects = data.get("projects", [])
     if projects:
         lines.append("## 🚀 Projets")
@@ -51,7 +55,7 @@ def cv_data_to_markdown(data: dict) -> str:
             lines.append(proj.get("description", ""))
             lines.append("")
 
-    # COMPÉTENCES
+
     skills = data.get("skills", {})
     if skills:
         lines.append("## 🛠️ Compétences")
@@ -61,7 +65,7 @@ def cv_data_to_markdown(data: dict) -> str:
             lines.append("**Soft skills :** " + " · ".join(skills["soft"]))
         lines.append("")
 
-    # FORMATION
+
     education = data.get("education", [])
     if education:
         lines.append("## 🎓 Formation")

@@ -1,15 +1,12 @@
 import streamlit as st
 import os
-import json
 from src.parser import extract_text_from_pdf
 from src.llm_logic import generate_cv_structure, analyze_cv_content
 from src.format import cv_data_to_markdown
 
-# Fichier app.py
-
 
 # --- CONFIGURATION DE LA PAGE ---
-st.set_page_config(page_title="IA CV Assistant", page_icon="🤖", layout="wide")
+st.set_page_config(page_title="SmartCV_NP", page_icon="🤖", layout="wide")
 
 # Initialisation du dossier data
 if not os.path.exists("data"):
@@ -23,7 +20,7 @@ if 'analysis_result' not in st.session_state:
 
 # --- SIDEBAR & CONFIGURATION ---
 with st.sidebar:
-    st.title("🤖 IA CV Assistant")
+    st.title("🤖 SmartCV_NP")
     st.markdown("---")
 
     lang = st.radio("🌐 Langue / Language", ["FR", "EN"])
@@ -108,7 +105,7 @@ with tab2:
             with st.spinner(texts['audit_spinner']):
                 cv_text = extract_text_from_pdf(temp_path)
                 if cv_text:
-                    # CRITIQUE : Passer job_title ici !
+
                     st.session_state.analysis_result = analyze_cv_content(cv_text, job_title)
                 else:
                     st.error("Impossible de lire le PDF.")
