@@ -64,3 +64,9 @@ streamlit run app.py
 - Modèle 3B : Bien que performant, le modèle 3B peut parfois nécessiter un "Reset" si le JSON de sortie est mal formé malgré nos filtres de nettoyage.
 
 - Performance : Puisqu'il s'agit d'un projet local à partir de LLM open-source, on assume une baisse de précision complexe au profit d'une inférence locale rapide et confidentielle.
+
+---
+
+## Crédits
+- **Développeur** : Nathan Pégé
+- **Projet** : SmartCV_NP (2026)
