@@ -223,25 +223,81 @@ def generate_cv_structure(user_input: str) -> dict:
 # ---------------------------------------------------------------------------
 # ANALYSE DE CV (Onglet 2 )
 # ---------------------------------------------------------------------------
+# ---------------------------------------------------------------------------
+# PIPELINE ANALYSE — ÉTAPE 1 : NORMALISATION
+# ---------------------------------------------------------------------------
 
-def analyze_cv_content(cv_text: str, target_job: str = "") -> dict:
+
+def normalize_cv_structure(raw_text: str) -> str:
     """
-    Analyse un CV par rapport à une fiche de poste optionnelle.
+    Étape 1 : Nettoie la structure du texte extrait du PDF sans modifier le contenu.
+    Répare les sauts de ligne et regroupe les informations par blocs logiques.
+    """
+    system_prompt = (
+        "You are a document restoration expert. Your goal is to take a messy text extraction from a PDF CV "
+        "and reorganize it into clear, logical sections (Identity, Summary, Experience, Skills, Education).\n\n"
+        "RULES:\n"
+        "- KEEP THE EXACT ORIGINAL WORDS. Do NOT paraphrase or improve the text.\n"
+        "- RESPOND IN THE SAME LANGUAGE AS THE INPUT TEXT (French or English).\n"
+        "- Fix broken lines or words cut in half by the PDF extraction process.\n"
+        "- Ensure dates are correctly attached to their respective job titles or schools.\n"
+        "- Use clear headers for each section.\n"
+        "- Remove any layout noise (page numbers, repeated headers/footers).\n"
+    )
+
+    prompt = f"Messy CV text to reorganize:\n\n---\n{raw_text}\n---"
+    return call_local_llm(prompt, system_prompt)
+
+
+# ---------------------------------------------------------------------------
+# PIPELINE ANALYSE — ÉTAPE 2 : AUDIT RH
+# ---------------------------------------------------------------------------
+
+def audit_cv_quality(structured_text: str, target_job: str = "") -> dict:
+    """
+    Étape 2 : Expertise RH sur le texte normalisé.
     """
     job_context = (
-        f"The target job position is: {target_job}. Evaluate the CV with this role in mind."
+        f"TARGET POSITION: {target_job}. Evaluate the CV specifically for this role."
         if target_job
-        else "No specific job position provided. Evaluate the CV on its general quality and completeness."
+        else "No specific job provided. Evaluate the general professional quality, impact, and clarity of the CV."
     )
 
     system_prompt = (
-        "You are a senior recruitment expert. Analyze the provided CV and return a strict JSON object.\n"
-        f"{job_context}\n"
-        "JSON keys required: score (integer 0-100), strengths (list of strings), "
-        "weaknesses (list of strings), global_advice (string).\n"
-        "Return ONLY the JSON. No preamble, no explanation."
+        "You are a Senior Recruitment Expert. Your role is to audit a structured CV profile.\n"
+        f"CONTEXT: {job_context}\n\n"
+        "CRITERIA:\n"
+        "- RESPOND IN THE SAME LANGUAGE AS THE INPUT TEXT (French or English).\n"
+        "- Use of action verbs and quantifiable results.\n"
+        "- Clarity of the career path.\n"
+        "- Technical relevance and skill density.\n\n"
+        "JSON KEYS REQUIRED (Always in English):\n"
+        "- score: Integer (0-100)\n"
+        "- strengths: List of strings\n"
+        "- weaknesses: List of strings\n"
+        "- global_advice: A concise, actionable string advice.\n\n"
+        "Return ONLY the JSON. No conversation."
     )
 
-    prompt = f"CV TEXT:\n{cv_text}\n"
+    prompt = f"STRUCTURED CV TEXT:\n{structured_text}\n"
     raw_response = call_local_llm(prompt, system_prompt)
     return clean_json_response(raw_response)
+
+
+# ---------------------------------------------------------------------------
+# FONCTION PRINCIPALE — ANALYSE COMPLÈTE
+# ---------------------------------------------------------------------------
+
+def analyze_cv_content(cv_text: str, target_job: str = "") -> dict:
+    """
+    Pipeline d'analyse en 2 étapes :
+    1. Normalisation du texte brut
+    2. Audit par l'expert IA
+    """
+    # Étape 1 : Nettoyage structurel
+    normalized_text = normalize_cv_structure(cv_text)
+
+    # Étape 2 : Analyse métier
+    analysis = audit_cv_quality(normalized_text, target_job)
+
+    return analysis

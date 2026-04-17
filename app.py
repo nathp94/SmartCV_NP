@@ -96,6 +96,7 @@ with tab1:
 # --- ONGLET 2 : ANALYSEUR DE CV ---
 with tab2:
     uploaded_file = st.file_uploader(texts['upload_label'], type="pdf")
+    job_title = st.text_input(texts['target_label'])
 
     if st.button(texts['btn_audit'], type="primary"):
         if uploaded_file:
@@ -107,7 +108,8 @@ with tab2:
             with st.spinner(texts['audit_spinner']):
                 cv_text = extract_text_from_pdf(temp_path)
                 if cv_text:
-                    st.session_state.analysis_result = analyze_cv_content(cv_text)
+                    # CRITIQUE : Passer job_title ici !
+                    st.session_state.analysis_result = analyze_cv_content(cv_text, job_title)
                 else:
                     st.error("Impossible de lire le PDF.")
         else:
