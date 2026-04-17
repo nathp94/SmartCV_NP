@@ -26,7 +26,7 @@ ollama pull llama3.2:3b
 ### 3. Installation du projet
 ```bash
 # Cloner le projet ou extraire l'archive
-cd cv_ai_assistant
+cd SmartCV_NP
 
 # Créer un environnement virtuel
 python -m venv venv
