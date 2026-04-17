@@ -1,4 +1,4 @@
-# 🤖 IA CV Assistant (Local & Privacy-First)
+# 🤖 SmartCV_NP
 
 Assistant 100% local intelligent pour la génération et l'analyse de CV.
 
