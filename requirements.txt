@@ -1,0 +1,13 @@
+# UI & Framework
+streamlit>=1.38.0
+
+# Intelligence Artificielle (Ollama client)
+ollama>=0.3.0
+
+# Manipulation PDF & Parsing
+pymupdf>=1.24.10
+fpdf2>=2.7.8
+
+# Validation de données & Environnement
+pydantic>=2.9.0
+python-dotenv>=1.0.1
