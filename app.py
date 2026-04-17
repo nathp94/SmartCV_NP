@@ -3,7 +3,10 @@ import os
 import json
 from src.parser import extract_text_from_pdf
 from src.llm_logic import generate_cv_structure, analyze_cv_content
-from src.exporter import export_to_pdf
+from src.format import cv_data_to_markdown
+
+# Fichier app.py
+
 
 # --- CONFIGURATION DE LA PAGE ---
 st.set_page_config(page_title="IA CV Assistant", page_icon="🤖", layout="wide")
@@ -74,18 +77,21 @@ with tab1:
 
     if st.session_state.cv_data:
         st.success("✅ CV Généré avec succès !")
-        st.json(st.session_state.cv_data)  # Aperçu du JSON
 
-        # Génération du PDF pour le bouton de téléchargement
-        pdf_path = "data/cv_genere.pdf"
-        if export_to_pdf(st.session_state.cv_data, pdf_path, lang=lang):
-            with open(pdf_path, "rb") as f:
-                st.download_button(
-                    label=texts['download_btn'],
-                    data=f,
-                    file_name="mon_cv_ia.pdf",
-                    mime="application/pdf"
-                )
+        tab_preview, tab_raw = st.tabs(["👁️ Aperçu CV", "🔧 JSON brut"])
+
+        with tab_preview:
+            md_content = cv_data_to_markdown(st.session_state.cv_data)
+            st.markdown(md_content)
+            st.download_button(
+                label="⬇️ Télécharger en Markdown",
+                data=md_content,
+                file_name="mon_cv.md",
+                mime="text/markdown"
+            )
+
+        with tab_raw:
+            st.json(st.session_state.cv_data)
 
 # --- ONGLET 2 : ANALYSEUR DE CV ---
 with tab2:
