@@ -42,7 +42,7 @@ def clean_json_response(response_text: str) -> dict:
     # Tentative 1 : comptage d'accolades (plus fiable)
     json_str = extract_json_block(response_text)
 
-    # Tentative 2 : Regex classique en fallback
+    # Tentative 2 : Regex classique 
     if not json_str:
         match = re.search(r'\{.*\}', response_text, re.DOTALL)
         json_str = match.group(0) if match else None
@@ -53,7 +53,7 @@ def clean_json_response(response_text: str) -> dict:
     try:
         return json.loads(json_str)
     except json.JSONDecodeError:
-        # Tentative 3 : nettoyage des virgules trailing (erreur LLM courante)
+        # Tentative 3 : nettoyage des virgules (erreur LLM courante)
         json_str_cleaned = re.sub(r',\s*([}\]])', r'\1', json_str)
         try:
             return json.loads(json_str_cleaned)
